@@ -1,0 +1,23 @@
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Maven build output
+backend/**/target/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
