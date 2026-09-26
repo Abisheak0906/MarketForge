@@ -62,4 +62,6 @@ public interface SellerListingRepository extends JpaRepository<SellerListing, Lo
         @Param("status") ListingStatus status,
         @Param("sellerStatus") SellerStatus sellerStatus
     );
+
+    long countByStatusAndSellerStatus(ListingStatus status, SellerStatus sellerStatus);
 }

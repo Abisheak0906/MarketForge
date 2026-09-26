@@ -11,8 +11,9 @@
 2. **Backend changes** — adding `search`/`category` parameters with a database-side query, an offer-summary aggregate (lowest price, active seller count), seller-status filtering on buyer endpoints, optional `version` on listing updates for controlled 409 conflicts, and a seller directory endpoint for the mocked identity selector.
 3. **Test authoring** — rewriting the integration test JSON helpers and adding tests for search/filter, pagination, buyer visibility rules, validation, ownership, duplicates, and stale-version conflicts.
 4. **Frontend** — generating the Vite + React application (buyer marketplace, product detail, seller dashboard), including forms, validation, loading/empty/error states and the mocked seller selector.
-5. **Debugging** — diagnosing build and test failures (see corrections below).
-6. **Documentation** — drafting this file and README.md from the verified behaviour of the code.
+5. **Admin portal** — adding `/api/admin` dashboard summary, sellers/count, sellers list, per-seller listings and under-review listing count by reusing the existing repositories, service, DTOs and enums (under review = ACTIVE listing of a PENDING seller), plus the `/admin` React page (summary cards, seller table, selected-seller listings) and integration tests.
+6. **Debugging** — diagnosing build and test failures (see corrections below).
+7. **Documentation** — drafting this file and README.md from the verified behaviour of the code.
 
 ## What was manually reviewed or verified by the developer/agent loop with real commands
 

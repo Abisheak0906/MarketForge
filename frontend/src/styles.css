@@ -484,6 +484,33 @@ h2 {
   font-size: 19px;
 }
 
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.admin-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-summary-label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.admin-summary-value {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.admin-section-title {
+  margin: 24px 0 12px;
+}
+
 @media (max-width: 640px) {
   .topbar-inner {
     height: auto;

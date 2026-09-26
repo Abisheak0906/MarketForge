@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import ProductsPage from './pages/ProductsPage.jsx'
 import ProductDetailPage from './pages/ProductDetailPage.jsx'
 import SellerPage from './pages/SellerPage.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 
 export default function App() {
   return (
@@ -19,6 +20,9 @@ export default function App() {
             <NavLink to="/seller" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
               Seller Dashboard
             </NavLink>
+            <NavLink to="/admin" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+              Admin
+            </NavLink>
           </nav>
         </div>
       </header>
@@ -28,6 +32,7 @@ export default function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
           <Route path="/seller" element={<SellerPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<div className="empty-state">Page not found.</div>} />
         </Routes>
       </main>

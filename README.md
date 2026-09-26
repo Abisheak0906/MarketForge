@@ -70,6 +70,8 @@ npm run dev
 
 The dev server runs on `http://localhost:5173` and proxies `/api` to `http://localhost:8080` (see `vite.config.js`), so no CORS configuration is needed in development. Production build: `npm run build`.
 
+Routes: `/products` (browse), `/products/:id` (product detail), `/seller` (seller dashboard), `/admin` (admin portal: summary counts, seller table, per-seller listings).
+
 ## 8. How to run tests
 
 ```bash
@@ -101,6 +103,16 @@ Seller endpoints (identity via `X-Seller-Id` request header):
 | DELETE | `/api/seller/listings/{id}` | Soft stop: `ACTIVE -> STOPPED` (never a physical delete) |
 
 Status codes: `200`/`204` success, `400` validation, `403` ownership or non-approved seller, `404` missing product/listing/seller, `409` duplicate listing or optimistic-lock conflict.
+
+Admin endpoints (read-only, no identity check — same exposure model as the buyer endpoints; challenge scope):
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/admin/dashboard` | Summary counts: `totalSellers` and `listingsUnderReview` |
+| GET | `/api/admin/sellers/count` | Total number of sellers |
+| GET | `/api/admin/sellers` | All sellers with id, name and status |
+| GET | `/api/admin/sellers/{sellerId}/listings` | Every listing of one seller, all statuses (including STOPPED) |
+| GET | `/api/admin/listings/under-review/count` | Listings under review: ACTIVE listings owned by PENDING sellers |
 
 Paged responses serialize as `{ "content": [...], "number", "size", "totalElements", "totalPages", ... }`.
 
@@ -156,6 +168,8 @@ Buyer-facing offer lists contain only listings that are `ACTIVE` **and** owned b
 | `BELOW_MOQ` | 0 < stock < MOQ (cannot fulfil the minimum order) |
 | `LOW_STOCK` | stock < 5 x MOQ |
 | `READY` | otherwise |
+
+"Under review" (admin view) uses the existing enums without adding state: a listing is under review while it is `ACTIVE` but its seller is still `PENDING` approval — i.e. it exists but is not published to buyers. `REJECTED` sellers' listings are not under review; they are rejected.
 
 Product cards show `lowestPrice` and `activeSellerCount`, computed by one grouped aggregate query over active/approved listings.
 

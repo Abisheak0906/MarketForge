@@ -362,4 +362,85 @@ public class MarketplaceIntegrationTest {
         mockMvc.perform(get("/api/products/999999/listings"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void adminSeesSellerTotalsAndListingsUnderReview() throws Exception {
+        createListingAndReturnId(approvedSellerId, validRequest());
+
+        listingRepository.save(SellerListing.builder()
+                .seller(sellerRepository.findById(pendingSellerId).orElseThrow())
+                .product(productRepository.findById(productId).orElseThrow())
+                .price(new BigDecimal("410.00"))
+                .stockQuantity(1000)
+                .minimumOrderQuantity(20)
+                .status(ListingStatus.ACTIVE)
+                .build());
+
+        mockMvc.perform(get("/api/admin/sellers/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("3"));
+
+        mockMvc.perform(get("/api/admin/listings/under-review/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+
+        mockMvc.perform(get("/api/admin/sellers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].name").value("Approved Seller"));
+
+        mockMvc.perform(get("/api/admin/sellers/" + approvedSellerId + "/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].status").value("ACTIVE"));
+
+        mockMvc.perform(get("/api/admin/sellers/" + pendingSellerId + "/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].sellerStatus").value("PENDING"));
+    }
+
+    @Test
+    void adminSeesStoppedListingsOfSeller() throws Exception {
+        Long listingId = createListingAndReturnId(approvedSellerId, validRequest());
+
+        mockMvc.perform(delete("/api/seller/listings/" + listingId)
+                .header("X-Seller-Id", approvedSellerId.toString()))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/admin/sellers/" + approvedSellerId + "/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].status").value("STOPPED"));
+    }
+
+    @Test
+    void adminDashboardReturnsSummaryCounts() throws Exception {
+        createListingAndReturnId(approvedSellerId, validRequest());
+
+        listingRepository.save(SellerListing.builder()
+                .seller(sellerRepository.findById(pendingSellerId).orElseThrow())
+                .product(productRepository.findById(productId).orElseThrow())
+                .price(new BigDecimal("410.00"))
+                .stockQuantity(1000)
+                .minimumOrderQuantity(20)
+                .status(ListingStatus.ACTIVE)
+                .build());
+
+        mockMvc.perform(get("/api/admin/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalSellers").value(3))
+                .andExpect(jsonPath("$.listingsUnderReview").value(1));
+    }
+
+    @Test
+    void adminSellerListingsHandleEmptyAndUnknownSeller() throws Exception {
+        mockMvc.perform(get("/api/admin/sellers/" + approvedSeller2Id + "/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0));
+
+        mockMvc.perform(get("/api/admin/sellers/999999/listings"))
+                .andExpect(status().isNotFound());
+    }
 }

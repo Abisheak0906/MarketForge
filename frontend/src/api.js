@@ -83,3 +83,18 @@ export async function stopListing(sellerId, listingId) {
     headers: { 'X-Seller-Id': sellerId }
   })
 }
+
+export async function fetchAdminDashboard() {
+  const { data } = await http.get('/admin/dashboard')
+  return data
+}
+
+export async function fetchAdminSellers() {
+  const { data } = await http.get('/admin/sellers')
+  return data
+}
+
+export async function fetchAdminSellerListings(sellerId, page = 0, size = 20) {
+  const { data } = await http.get(`/admin/sellers/${sellerId}/listings`, { params: { page, size } })
+  return data
+}

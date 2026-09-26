@@ -63,6 +63,21 @@ public class MarketplaceService {
                 .toList();
     }
 
+    public long getTotalSellers() {
+        return sellerRepository.count();
+    }
+
+    public AdminDashboardResponse getAdminDashboard() {
+        return AdminDashboardResponse.builder()
+                .totalSellers(getTotalSellers())
+                .listingsUnderReview(getListingsUnderReview())
+                .build();
+    }
+
+    public long getListingsUnderReview() {
+        return listingRepository.countByStatusAndSellerStatus(ListingStatus.ACTIVE, SellerStatus.PENDING);
+    }
+
     public Page<SellerListingResponse> getProductListings(Long productId, Pageable pageable) {
         if (!productRepository.existsById(productId)) {
             throw new ResourceNotFoundException("Product not found with id: " + productId);
