@@ -1,4 +1,4 @@
-# BajriX Marketplace
+# MarketForge
 
 A small multi-seller construction / home-building product marketplace. Buyers browse and compare offers; sellers manage their own listings (price, stock, MOQ, stop/resume selling).
 
